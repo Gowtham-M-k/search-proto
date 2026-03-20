@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KYN Search</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Config Panel -->
+  <div id="config-panel" class="config-panel">
+    <div class="config-inner">
+      <div class="config-logo">⚙️ Typesense Config</div>
+      <div class="config-form">
+        <div class="config-row">
+          <label>Host</label>
+          <input id="cfg-host" type="text" value="localhost" placeholder="localhost" />
+        </div>
+        <div class="config-row">
+          <label>Port</label>
+          <input id="cfg-port" type="text" value="8108" placeholder="8108" />
+        </div>
+        <div class="config-row">
+          <label>Protocol</label>
+          <select id="cfg-protocol">
+            <option value="http">http</option>
+            <option value="https">https</option>
+          </select>
+        </div>
+        <div class="config-row">
+          <label>API Key</label>
+          <input id="cfg-key" type="text" placeholder="your-api-key" />
+        </div>
+        <button id="cfg-save" class="btn-primary">Connect</button>
+        <div id="cfg-status" class="cfg-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="app hidden">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">🔍</span>
+          <span class="logo-text">KYN Search</span>
+        </div>
+        <button id="open-config" class="btn-ghost">⚙️ Config</button>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-container">
+        <div class="search-box" id="search-box">
+          <span class="search-icon">🔍</span>
+          <input
+            id="search-input"
+            type="text"
+            class="search-input"
+            placeholder="Search events, spaces, people, #hashtags..."
+            autocomplete="off"
+          />
+          <button id="search-clear" class="search-clear hidden">✕</button>
+        </div>
+
+        <!-- Dropdown: Recent Searches + Suggestions -->
+        <div id="search-dropdown" class="search-dropdown hidden">
+          <!-- Recent Searches -->
+          <div id="recent-section" class="dropdown-section hidden">
+            <div class="dropdown-header">
+              <span>Recent Searches</span>
+              <button id="clear-all-recent" class="btn-link">Clear all</button>
+            </div>
+            <ul id="recent-list" class="recent-list"></ul>
+          </div>
+
+          <!-- Live Suggestions -->
+          <div id="suggestions-section" class="dropdown-section hidden">
+            <div class="dropdown-header"><span>Suggestions</span></div>
+            <ul id="suggestions-list" class="suggestions-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="tabs-bar">
+      <div class="tabs-inner">
+        <button class="tab active" data-tab="all">All</button>
+        <button class="tab" data-tab="events">Events</button>
+        <button class="tab" data-tab="spaces">Spaces</button>
+        <button class="tab" data-tab="profiles">Profiles</button>
+        <button class="tab" data-tab="hashtags">Hashtags</button>
+        <button class="tab" data-tab="posts">Content</button>
+      </div>
+    </div>
+
+    <!-- Results Area -->
+    <div class="results-area" id="results-area">
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">Start searching</div>
+        <div class="empty-sub">Search across events, spaces, profiles, hashtags, and content</div>
+      </div>
+
+      <div id="intent-banner" class="intent-banner hidden"></div>
+
+      <div id="results-container" class="results-container hidden">
+        <!-- Events Section -->
+        <div id="section-events" class="result-section hidden">
+          <div class="section-header">
+            <span class="section-icon">🎟️</span>
+            <span class="section-title">Events</span>
+            <span class="section-count" id="count-events"></span>
+          </div>
+          <div id="list-events" class="result-list"></div>
+          <div id="pagination-events" class="pagination-bar"></div>
+        </div>
+
+        <!-- Spaces Section -->
+        <div id="section-spaces" class="result-section hidden">
+          <div class="section-header">
+            <span class="section-icon">👥</span>
+            <span class="section-title">Spaces</span>
+            <span class="section-count" id="count-spaces"></span>
+          </div>
+          <div id="list-spaces" class="result-list"></div>
+          <div id="pagination-spaces" class="pagination-bar"></div>
+        </div>
+
+        <!-- Profiles Section -->
+        <div id="section-profiles" class="result-section hidden">
+          <div class="section-header">
+            <span class="section-icon">👤</span>
+            <span class="section-title">Profiles</span>
+            <span class="section-count" id="count-profiles"></span>
+          </div>
+          <div id="list-profiles" class="result-list"></div>
+          <div id="pagination-profiles" class="pagination-bar"></div>
+        </div>
+
+        <!-- Content Section -->
+        <div id="section-posts" class="result-section hidden">
+          <div class="section-header">
+            <span class="section-icon">📝</span>
+            <span class="section-title">Content</span>
+            <span class="section-count" id="count-posts"></span>
+          </div>
+          <div id="list-posts" class="result-list"></div>
+          <div id="pagination-posts" class="pagination-bar"></div>
+        </div>
+
+        <!-- Hashtags Section -->
+        <div id="section-hashtags" class="result-section hidden">
+          <div class="section-header">
+            <span class="section-icon">#</span>
+            <span class="section-title">Hashtags</span>
+            <span class="section-count" id="count-hashtags"></span>
+          </div>
+          <div id="list-hashtags" class="result-list"></div>
+          <div id="pagination-hashtags" class="pagination-bar"></div>
+        </div>
+
+        <!-- No Results -->
+        <div id="no-results" class="no-results hidden">
+          <div class="no-results-icon">😕</div>
+          <div>No results found for "<span id="no-results-query"></span>"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
