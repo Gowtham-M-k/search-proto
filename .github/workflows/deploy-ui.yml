@@ -3,8 +3,6 @@ name: Deploy KYN Search UI
 on:
   push:
     branches: [main]
-    paths:
-      - 'kyn/ui/**'
 
 permissions:
   contents: read
@@ -27,8 +25,6 @@ jobs:
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
-        with:
-          path: kyn/ui
 
       - id: deployment
         uses: actions/deploy-pages@v4
